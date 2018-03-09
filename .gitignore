@@ -1,4 +1,6 @@
 *.exe
 *.DS_Store
 *.metadata/
-
+net3/out/
+net3/.tkenvlog
+net3/.tkenvrc
