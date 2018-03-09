@@ -80,7 +80,7 @@ void Statistic::infoTS(simtime_t time) {
          (Delay)[src][dst].push_back(d);
  }
 
-// jitter °´ÕÕdelay¼ÆËãÁË£¬Òò´Ë²»ÓÃÌí¼Ó
+// jitter ï¿½ï¿½ï¿½ï¿½delayï¿½ï¿½ï¿½ï¿½ï¿½Ë£ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 // void Statistic::setJitter(simtime_t time, int src, int dst, double d) {
 //     if (time > INI and collect)
 //         (Jitter)[src][dst].push_back(k);
@@ -129,10 +129,10 @@ void Statistic::setFolder(string folder) {
 void Statistic::setNumTx(int n) {
     numTx = n;
 }
-//
-//void Statistic::setNumFlow(int n) {
-//    flow_num = n;
-//}
+
+void Statistic::setNumFlow(int n) {
+    flow_num = n;
+}
 
 void Statistic::setNumNodes(int n) {
     numNodes = n;
@@ -210,34 +210,49 @@ void Statistic::printStats() {
     // features.push_back(drops/steps);
 
 
-    ifstream myfile (folderName + "/Traffic.txt");
+    ifstream myfile_tra (folderName + "/Traffic.txt");
     Flow_info = vector<vector<int>  > (100, vector<int>(100));
     vector<double> df;
-    if(myfile.is_open()){
+    if(myfile_tra.is_open()){
         for(int i = 0; i < flow_num; i++){
 
             string aux;
 
-            getline(myfile, aux, ',');//flow_id
-            getline(myfile, aux, ',');//src
+            getline(myfile_tra, aux, ',');//flow_id
+            getline(myfile_tra, aux, ',');//src
             int src = stoi(aux);
-            getline(myfile, aux, ',');//dst
+            getline(myfile_tra, aux, ',');//dst
             int dst = stoi(aux);
-            getline(myfile, aux,',');//df
+            getline(myfile_tra, aux,',');//df
             double bw = stod(aux);
             Flow_info[i].push_back(src);
             Flow_info[i].push_back(dst);
             df.push_back(bw);
+            cout<<"bw="<<bw<<endl;
         }
     }
-    myfile.close();
+    myfile_tra.close();
+
+
+    ofstream myfile_flow;
+    string filenameflow;
+    filenameflow = folderName + "/Flow.txt";
+    myfile_flow.open (filenameflow, ios::out | ios::trunc);
+    for (unsigned int i=0; i< flow_num; i++){
+        myfile_flow << i << ":";
+        myfile_flow << Flow_info[i][0] << ","<< Flow_info[i][1]<<','<<df[i]<<',';
+
+    }
+    myfile_flow << endl;
+    myfile_flow.close();
+
      // Delay
     int steps = (SIMTIME/1000)+50;
     for (int i = 0; i < flow_num; i++) {
 //       for (int j = 0; j < numTx; j++) {
            int src = Flow_info[i][0];
            int dst = Flow_info[i][1];
-
+           cout<< "src = "<<src<<";dst="<<dst<<endl;
            long double d = 0;
            unsigned int numPackets = (Delay)[src].size();
            for (unsigned int k = 0; k < numPackets; k++)

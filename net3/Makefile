@@ -1,12 +1,12 @@
 #
-# OMNeT++/OMNEST Makefile for net3
+# OMNeT++/OMNEST Makefile for net2
 #
 # This file was generated with the command:
 #  opp_makemake -f --deep -O out
 #
 
 # Name of target to be created (-o option)
-TARGET = net3$(EXE_SUFFIX)
+TARGET = net2$(EXE_SUFFIX)
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
@@ -35,12 +35,18 @@ OBJS = \
     $O/Routing.o \
     $O/Statistic.o \
     $O/TrafficController.o \
+    $O/messages/._ControlPacket_m.o \
+    $O/messages/._DataPacket_m.o \
+    $O/messages/._TimerNextPacket_m.o \
     $O/messages/ControlPacket_m.o \
     $O/messages/DataPacket_m.o \
     $O/messages/TimerNextPacket_m.o
 
 # Message files
 MSGFILES = \
+    messages/._ControlPacket.msg \
+    messages/._DataPacket.msg \
+    messages/._TimerNextPacket.msg \
     messages/ControlPacket.msg \
     messages/DataPacket.msg \
     messages/TimerNextPacket.msg
@@ -115,7 +121,7 @@ msgheaders: $(MSGFILES:.msg=_m.h)
 clean:
 	$(qecho) Cleaning...
 	$(Q)-rm -rf $O
-	$(Q)-rm -f net3 net3.exe libnet3.so libnet3.a libnet3.dll libnet3.dylib
+	$(Q)-rm -f net2 net2.exe libnet2.so libnet2.a libnet2.dll libnet2.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f output/*_m.cc output/*_m.h
@@ -151,6 +157,12 @@ $O/Statistic.o: Statistic.cc \
 $O/TrafficController.o: TrafficController.cc \
 	TrafficController.h \
 	messages/ControlPacket_m.h
+$O/messages/._ControlPacket_m.o: messages/._ControlPacket_m.cc \
+	messages/._ControlPacket_m.h
+$O/messages/._DataPacket_m.o: messages/._DataPacket_m.cc \
+	messages/._DataPacket_m.h
+$O/messages/._TimerNextPacket_m.o: messages/._TimerNextPacket_m.cc \
+	messages/._TimerNextPacket_m.h
 $O/messages/ControlPacket_m.o: messages/ControlPacket_m.cc \
 	messages/ControlPacket_m.h
 $O/messages/DataPacket_m.o: messages/DataPacket_m.cc \

@@ -87,7 +87,7 @@ void TrafficController::getTrafficInfo(int id, double rData[]) {
 
 //     rData[100] = {0.0};
      for(int i = 0; i < numNodes; i++){
-         rData[i]=0.0;
+         rData[i]=1;
      }
      rData[id]=-1;
      if (myfile.is_open()) {
@@ -102,7 +102,8 @@ void TrafficController::getTrafficInfo(int id, double rData[]) {
                  getline(myfile, aux, ',');//dst
                  int dst = stoi(aux);
                  getline(myfile, aux, ',');//df
-                 rData[dst]=stod(aux);
+                 double df = stod(aux);
+                 rData[dst]=df;
                  cout<<"rData[] id="<<id<<"; id=dst:"<<stod(aux)<<endl;
                  getline(myfile, aux, ',');//Df
 
