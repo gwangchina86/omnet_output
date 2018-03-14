@@ -107,17 +107,12 @@ void Application::handleMessage(cMessage *msg)
         cout << "lambda"<< lambda<<endl;
         cout<<"id="<<id<<"flowRatio"<<flowRatio<<endl;
         cout<<"dst="<<dest<<endl;
-<<<<<<< HEAD
 
         //lambda = lambdaMax/numRx;
         if(lambda == 0) {
             lambda = 1;
             cout<<"lambda=0, id="<<id<<",dst="<<dest<<"flow_r="<<flowRatio<<endl;
         }
-=======
-        //lambda = lambdaMax/numRx;
-
->>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62
         interArrival = new TimerNextPacket("timer");
         interArrival->setLambda(1.0/lambda);
         if (dest != id)

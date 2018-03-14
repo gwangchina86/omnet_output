@@ -1,5 +1,1 @@
-<<<<<<< HEAD
 -g -Wall   -fno-stack-protector  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I. -Idoc -Idoc/doxy -Idoc/doxy/search -Idoc/neddoc -Imessages -Ioutput -Iresults -I/Users/byr/Downloads/omnetpp-4.6/include
-=======
--g -Wall   -I/usr/include -fno-stack-protector  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I. -Imessages -Ioutput -IE:/omnetpp46/omnetpp-4.6/include
->>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62

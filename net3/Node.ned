@@ -35,6 +35,7 @@ module Node
             id = id;
             nodeRatio = uniform(0.1,1);
             numNodes = numTx;
+            
         };
         app[numNodes]: Application {
             id = id;
