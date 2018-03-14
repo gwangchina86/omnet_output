@@ -81,7 +81,11 @@ void Statistic::infoTS(simtime_t time) {
          cout<<"setDelay src="<<src<<",dst="<<dst<<", push = "<<d<<endl;
  }
 
+<<<<<<< HEAD
 // jitter
+=======
+// jitter ����delay�����ˣ���˲������
+>>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62
 // void Statistic::setJitter(simtime_t time, int src, int dst, double d) {
 //     if (time > INI and collect)
 //         (Jitter)[src][dst].push_back(k);
@@ -215,19 +219,25 @@ void Statistic::printStats() {
     // features.push_back(drops/steps);
 
 
-    ifstream myfile (folderName + "/Traffic.txt");
+    ifstream myfile_tra (folderName + "/Traffic.txt");
     Flow_info = vector<vector<int>  > (100, vector<int>(100));
     vector<double> df;
-    if(myfile.is_open()){
+    if(myfile_tra.is_open()){
         for(int i = 0; i < flow_num; i++){
 
             string aux;
+<<<<<<< HEAD
             getline(myfile, aux, ',');//flow_id
             getline(myfile, aux, ',');//src
+=======
+
+            getline(myfile_tra, aux, ',');//flow_id
+            getline(myfile_tra, aux, ',');//src
+>>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62
             int src = stoi(aux);
-            getline(myfile, aux, ',');//dst
+            getline(myfile_tra, aux, ',');//dst
             int dst = stoi(aux);
-            getline(myfile, aux,',');//df
+            getline(myfile_tra, aux,',');//df
             double bw = stod(aux);
             getline(myfile, aux,',');//Df
             Flow_info[i][0]=src;
@@ -235,9 +245,14 @@ void Statistic::printStats() {
 //            Flow_info[i].push_back(src);
 //            Flow_info[i].push_back(dst);
             df.push_back(bw);
+            cout<<"bw="<<bw<<endl;
         }
     }
+<<<<<<< HEAD
     myfile.close();
+=======
+    myfile_tra.close();
+>>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62
 
 
     ofstream myfile_flow;

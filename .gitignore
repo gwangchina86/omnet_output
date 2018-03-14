@@ -1,6 +1,12 @@
 *.exe
 *.DS_Store
 *.metadata/
+<<<<<<< HEAD
 net3/out/gcc-debug/
 net3/.tkenvlog
 net3/.tkenvrc
+=======
+./net3/out/
+./net3/.tkenvlog
+./net3/.tkenvrc
+>>>>>>> 2de19756e4497ad39203bcc06ed0d1f9622d2d62
