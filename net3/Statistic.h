@@ -42,7 +42,7 @@ class Statistic {
     void setLost(simtime_t time, int n, int p);
     void setLost(simtime_t time);
     void setNumTx(int n);
-    void setFlowNum(int n);
+    void setNumFlow(int n);
     void setNumNodes(int n);
     void setRoutingParaam(double r);
     void setMaxSim(double r);

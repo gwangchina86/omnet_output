@@ -14,7 +14,15 @@ USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
 #USERIF_LIBS = $(TKENV_LIBS)
 
 # C++ include paths (with -I)
-INCLUDE_PATH = -I. -Imessages -Ioutput
+INCLUDE_PATH = \
+    -I. \
+    -Idoc \
+    -Idoc/doxy \
+    -Idoc/doxy/search \
+    -Idoc/neddoc \
+    -Imessages \
+    -Ioutput \
+    -Iresults
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -117,15 +125,20 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f net3 net3.exe libnet3.so libnet3.a libnet3.dll libnet3.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
+	$(Q)-rm -f doc/*_m.cc doc/*_m.h
+	$(Q)-rm -f doc/doxy/*_m.cc doc/doxy/*_m.h
+	$(Q)-rm -f doc/doxy/search/*_m.cc doc/doxy/search/*_m.h
+	$(Q)-rm -f doc/neddoc/*_m.cc doc/neddoc/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f output/*_m.cc output/*_m.h
+	$(Q)-rm -f results/*_m.cc results/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc messages/*.cc output/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc doc/*.cc doc/doxy/*.cc doc/doxy/search/*.cc doc/neddoc/*.cc messages/*.cc output/*.cc results/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/Application.o: Application.cc \

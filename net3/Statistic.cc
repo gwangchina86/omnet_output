@@ -78,9 +78,10 @@ void Statistic::infoTS(simtime_t time) {
  void Statistic::setDelay(simtime_t time, int src, int dst, double d) {
      if (time > INI and collect)
          (Delay)[src][dst].push_back(d);
+         cout<<"setDelay src="<<src<<",dst="<<dst<<", push = "<<d<<endl;
  }
 
-// jitter 按照delay计算了，因此不用添加
+// jitter
 // void Statistic::setJitter(simtime_t time, int src, int dst, double d) {
 //     if (time > INI and collect)
 //         (Jitter)[src][dst].push_back(k);
@@ -100,12 +101,16 @@ void Statistic::setLost(simtime_t time, int n, int p) {
     if (time > INI and collect) {
         drops++;
         (DropsV)[n][p]++;
+        cout<<"setLost n="<<n<<",p="<<p<<" DropsV[]="<<(DropsV)[n][p]<<endl;
     }
 }
 
 void Statistic::setLost(simtime_t time) {
-    if (time > INI and collect)
+    if (time > INI and collect){
         drops++;
+        cout<<"setLost drops="<<drops<<endl;
+    }
+
 }
 
 
@@ -129,10 +134,10 @@ void Statistic::setFolder(string folder) {
 void Statistic::setNumTx(int n) {
     numTx = n;
 }
-//
-//void Statistic::setNumFlow(int n) {
-//    flow_num = n;
-//}
+
+void Statistic::setNumFlow(int n) {
+    flow_num = n;
+}
 
 void Statistic::setNumNodes(int n) {
     numNodes = n;
@@ -217,7 +222,6 @@ void Statistic::printStats() {
         for(int i = 0; i < flow_num; i++){
 
             string aux;
-
             getline(myfile, aux, ',');//flow_id
             getline(myfile, aux, ',');//src
             int src = stoi(aux);
@@ -225,23 +229,45 @@ void Statistic::printStats() {
             int dst = stoi(aux);
             getline(myfile, aux,',');//df
             double bw = stod(aux);
-            Flow_info[i].push_back(src);
-            Flow_info[i].push_back(dst);
+            getline(myfile, aux,',');//Df
+            Flow_info[i][0]=src;
+            Flow_info[i][1]=dst;
+//            Flow_info[i].push_back(src);
+//            Flow_info[i].push_back(dst);
             df.push_back(bw);
         }
     }
     myfile.close();
+
+
+    ofstream myfile_flow;
+    string filenameflow;
+    filenameflow = folderName + "/Flow.txt";
+    myfile_flow.open (filenameflow, ios::out | ios::trunc);
+    for (unsigned int i=0; i< flow_num; i++){
+        myfile_flow << i << ":";
+        myfile_flow << Flow_info[i][0] << ","<< Flow_info[i][1]<<','<<df[i]<<',';
+
+    }
+    myfile_flow << endl;
+    myfile_flow.close();
+
      // Delay
     int steps = (SIMTIME/1000)+50;
     for (int i = 0; i < flow_num; i++) {
 //       for (int j = 0; j < numTx; j++) {
            int src = Flow_info[i][0];
            int dst = Flow_info[i][1];
-
+           cout<< "src = "<<src<<";dst="<<dst<<endl;
            long double d = 0;
-           unsigned int numPackets = (Delay)[src].size();
-           for (unsigned int k = 0; k < numPackets; k++)
+           unsigned int numPackets = (Delay)[src][dst].size();
+
+           for (unsigned int k = 0; k < numPackets; k++){
+               cout<<"(Delay)["<<src<<"]["<<dst<<"][k]="<<(Delay)[src][dst][k]<<endl;
                d += (Delay)[src][dst][k];
+
+           }
+
            if (numPackets == 0)
                if (src == dst)
                    features.push_back(-1);
@@ -260,6 +286,7 @@ void Statistic::printStats() {
     myfile_delay.open (filename, ios::out | ios::trunc );
     for (unsigned int i = 0; i < features.size(); i++ ) {
         double d = features[i];
+        d = d*1000;
         myfile_delay  << d << ",";
     }
     myfile_delay << endl;
@@ -292,6 +319,7 @@ void Statistic::printStats() {
            int src = Flow_info[i][0];
            int dst = Flow_info[i][1];
            features2.push_back((DropsV)[src][dst]/steps);
+           cout<<"drops paloss"<< (DropsV)[src][dst]/steps<<endl;
     //    }
     }
     // features2.push_back(drops/steps);
@@ -325,9 +353,10 @@ void Statistic::printStats() {
             features3.push_back(0);
         else
         {
-            for (unsigned int k = 0; k < numPackets-1; k++)
+            for (unsigned int k = 0; k < numPackets-1; k++){
                 d += abs((Jitter)[src][dst][k+1] - (Jitter)[src][dst][k]);
-            features3.push_back(d/(numPackets-1));
+            }
+            features3.push_back(d*1000/(numPackets-1));
         }
     //    }
     }
@@ -338,16 +367,17 @@ void Statistic::printStats() {
     myfile3.open (filename3, ios::out | ios::trunc );
     for (unsigned int i = 0; i < features3.size(); i++ ) {
         double d = features3[i];
+        d = d*1000;
         myfile3  << d << ",";
     }
     myfile3 << endl;
     myfile3.close();
-
+    cout<<"drops="<<drops<<endl;
    // Reset
     drops = 0;
     Traffic.clear();
     Delay.clear();
     DropsV.clear();
-    // Jitter.clear();
+    Jitter.clear();
 
 }

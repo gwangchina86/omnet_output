@@ -84,10 +84,11 @@ void TrafficController::getTrafficInfo(int id, double rData[]) {
 
      string line;
      ifstream myfile (folderName + "/Traffic.txt");
+//     cout<<"flow_num="<<flow_num<<endl;
 
 //     rData[100] = {0.0};
      for(int i = 0; i < numNodes; i++){
-         rData[i]=0.0;
+         rData[i]=0.01;
      }
      rData[id]=-1;
      if (myfile.is_open()) {
@@ -101,9 +102,11 @@ void TrafficController::getTrafficInfo(int id, double rData[]) {
              if (val == id){
                  getline(myfile, aux, ',');//dst
                  int dst = stoi(aux);
+                 aux = "";
                  getline(myfile, aux, ',');//df
-                 rData[dst]=stod(aux);
-                 cout<<"rData[] id="<<id<<"; id=dst:"<<stod(aux)<<endl;
+                 double df = stod(aux);
+                 rData[dst]=df;
+                 cout<<"rData[] id="<<id<<"; id=dst:"<<df<<endl;
                  getline(myfile, aux, ',');//Df
 
              }
