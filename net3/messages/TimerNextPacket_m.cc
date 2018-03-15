@@ -59,6 +59,8 @@ TimerNextPacket::TimerNextPacket(const char *name, int kind) : ::cMessage(name,k
 {
     this->target_var = 0;
     this->lambda_var = 0;
+    this->flow_id_var = 0;
+    this->bandwidth_var = 0;
 }
 
 TimerNextPacket::TimerNextPacket(const TimerNextPacket& other) : ::cMessage(other)
@@ -82,6 +84,8 @@ void TimerNextPacket::copy(const TimerNextPacket& other)
 {
     this->target_var = other.target_var;
     this->lambda_var = other.lambda_var;
+    this->flow_id_var = other.flow_id_var;
+    this->bandwidth_var = other.bandwidth_var;
 }
 
 void TimerNextPacket::parsimPack(cCommBuffer *b)
@@ -89,6 +93,8 @@ void TimerNextPacket::parsimPack(cCommBuffer *b)
     ::cMessage::parsimPack(b);
     doPacking(b,this->target_var);
     doPacking(b,this->lambda_var);
+    doPacking(b,this->flow_id_var);
+    doPacking(b,this->bandwidth_var);
 }
 
 void TimerNextPacket::parsimUnpack(cCommBuffer *b)
@@ -96,6 +102,8 @@ void TimerNextPacket::parsimUnpack(cCommBuffer *b)
     ::cMessage::parsimUnpack(b);
     doUnpacking(b,this->target_var);
     doUnpacking(b,this->lambda_var);
+    doUnpacking(b,this->flow_id_var);
+    doUnpacking(b,this->bandwidth_var);
 }
 
 int TimerNextPacket::getTarget() const
@@ -116,6 +124,26 @@ double TimerNextPacket::getLambda() const
 void TimerNextPacket::setLambda(double lambda)
 {
     this->lambda_var = lambda;
+}
+
+int TimerNextPacket::getFlow_id() const
+{
+    return flow_id_var;
+}
+
+void TimerNextPacket::setFlow_id(int flow_id)
+{
+    this->flow_id_var = flow_id;
+}
+
+double TimerNextPacket::getBandwidth() const
+{
+    return bandwidth_var;
+}
+
+void TimerNextPacket::setBandwidth(double bandwidth)
+{
+    this->bandwidth_var = bandwidth;
 }
 
 class TimerNextPacketDescriptor : public cClassDescriptor
@@ -165,7 +193,7 @@ const char *TimerNextPacketDescriptor::getProperty(const char *propertyname) con
 int TimerNextPacketDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 2+basedesc->getFieldCount(object) : 2;
+    return basedesc ? 4+basedesc->getFieldCount(object) : 4;
 }
 
 unsigned int TimerNextPacketDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -179,8 +207,10 @@ unsigned int TimerNextPacketDescriptor::getFieldTypeFlags(void *object, int fiel
     static unsigned int fieldTypeFlags[] = {
         FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<4) ? fieldTypeFlags[field] : 0;
 }
 
 const char *TimerNextPacketDescriptor::getFieldName(void *object, int field) const
@@ -194,8 +224,10 @@ const char *TimerNextPacketDescriptor::getFieldName(void *object, int field) con
     static const char *fieldNames[] = {
         "target",
         "lambda",
+        "flow_id",
+        "bandwidth",
     };
-    return (field>=0 && field<2) ? fieldNames[field] : NULL;
+    return (field>=0 && field<4) ? fieldNames[field] : NULL;
 }
 
 int TimerNextPacketDescriptor::findField(void *object, const char *fieldName) const
@@ -204,6 +236,8 @@ int TimerNextPacketDescriptor::findField(void *object, const char *fieldName) co
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
     if (fieldName[0]=='t' && strcmp(fieldName, "target")==0) return base+0;
     if (fieldName[0]=='l' && strcmp(fieldName, "lambda")==0) return base+1;
+    if (fieldName[0]=='f' && strcmp(fieldName, "flow_id")==0) return base+2;
+    if (fieldName[0]=='b' && strcmp(fieldName, "bandwidth")==0) return base+3;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -218,8 +252,10 @@ const char *TimerNextPacketDescriptor::getFieldTypeString(void *object, int fiel
     static const char *fieldTypeStrings[] = {
         "int",
         "double",
+        "int",
+        "double",
     };
-    return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<4) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *TimerNextPacketDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -261,6 +297,8 @@ std::string TimerNextPacketDescriptor::getFieldAsString(void *object, int field,
     switch (field) {
         case 0: return long2string(pp->getTarget());
         case 1: return double2string(pp->getLambda());
+        case 2: return long2string(pp->getFlow_id());
+        case 3: return double2string(pp->getBandwidth());
         default: return "";
     }
 }
@@ -277,6 +315,8 @@ bool TimerNextPacketDescriptor::setFieldAsString(void *object, int field, int i,
     switch (field) {
         case 0: pp->setTarget(string2long(value)); return true;
         case 1: pp->setLambda(string2double(value)); return true;
+        case 2: pp->setFlow_id(string2long(value)); return true;
+        case 3: pp->setBandwidth(string2double(value)); return true;
         default: return false;
     }
 }

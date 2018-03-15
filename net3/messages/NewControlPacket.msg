@@ -13,32 +13,11 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-package networksimulator;
-
 //
-// TODO auto-generated module
+// TODO generated message class
 //
-simple Application
-{
+packet NewControlPacket {
 
-    parameters:
-        int id;
-        double lambda;
-        int dest;
-        int generation;
-        int numNodes;
-   
-        
-
-
-        double simulationDuration;
-
-
-        @display("i=block/browser");
-
-
-    gates:
-        output out;
-        input tcontrol;
-        
+    double data[];
+    int flow_set[];
 }

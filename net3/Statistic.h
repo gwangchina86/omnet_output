@@ -47,7 +47,7 @@ class Statistic {
     void setRoutingParaam(double r);
     void setMaxSim(double r);
     void setFolder(string folder);
-
+    void setFlowId(int flow_id);
 
     void printStats();
 
@@ -73,10 +73,12 @@ class Statistic {
     double routingP;
     int flow_num;
 
+
     string folderName;
 
 
     int drops;
+    int flow_id;
     vector< vector< vector <double> > > Traffic;
     vector< vector <double> > Routing;
     vector< vector< vector <double> > >  Delay;

@@ -59,6 +59,7 @@ DataPacket::DataPacket(const char *name, int kind) : ::cPacket(name,kind)
 {
     this->srcNode_var = 0;
     this->dstNode_var = 0;
+    this->flow_id_var = 0;
     this->ttl_var = 0;
     this->lastRouter_var = 0;
     this->l2_var = 0;
@@ -98,6 +99,7 @@ void DataPacket::copy(const DataPacket& other)
 {
     this->srcNode_var = other.srcNode_var;
     this->dstNode_var = other.dstNode_var;
+    this->flow_id_var = other.flow_id_var;
     this->ttl_var = other.ttl_var;
     this->lastRouter_var = other.lastRouter_var;
     this->l2_var = other.l2_var;
@@ -121,6 +123,7 @@ void DataPacket::parsimPack(cCommBuffer *b)
     ::cPacket::parsimPack(b);
     doPacking(b,this->srcNode_var);
     doPacking(b,this->dstNode_var);
+    doPacking(b,this->flow_id_var);
     doPacking(b,this->ttl_var);
     doPacking(b,this->lastRouter_var);
     doPacking(b,this->l2_var);
@@ -144,6 +147,7 @@ void DataPacket::parsimUnpack(cCommBuffer *b)
     ::cPacket::parsimUnpack(b);
     doUnpacking(b,this->srcNode_var);
     doUnpacking(b,this->dstNode_var);
+    doUnpacking(b,this->flow_id_var);
     doUnpacking(b,this->ttl_var);
     doUnpacking(b,this->lastRouter_var);
     doUnpacking(b,this->l2_var);
@@ -180,6 +184,16 @@ int DataPacket::getDstNode() const
 void DataPacket::setDstNode(int dstNode)
 {
     this->dstNode_var = dstNode;
+}
+
+int DataPacket::getFlow_id() const
+{
+    return flow_id_var;
+}
+
+void DataPacket::setFlow_id(int flow_id)
+{
+    this->flow_id_var = flow_id;
 }
 
 int DataPacket::getTtl() const
@@ -389,7 +403,7 @@ const char *DataPacketDescriptor::getProperty(const char *propertyname) const
 int DataPacketDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
-    return basedesc ? 18+basedesc->getFieldCount(object) : 18;
+    return basedesc ? 19+basedesc->getFieldCount(object) : 19;
 }
 
 unsigned int DataPacketDescriptor::getFieldTypeFlags(void *object, int field) const
@@ -419,8 +433,9 @@ unsigned int DataPacketDescriptor::getFieldTypeFlags(void *object, int field) co
         FD_ISEDITABLE,
         FD_ISEDITABLE,
         FD_ISEDITABLE,
+        FD_ISEDITABLE,
     };
-    return (field>=0 && field<18) ? fieldTypeFlags[field] : 0;
+    return (field>=0 && field<19) ? fieldTypeFlags[field] : 0;
 }
 
 const char *DataPacketDescriptor::getFieldName(void *object, int field) const
@@ -434,6 +449,7 @@ const char *DataPacketDescriptor::getFieldName(void *object, int field) const
     static const char *fieldNames[] = {
         "srcNode",
         "dstNode",
+        "flow_id",
         "ttl",
         "lastRouter",
         "l2",
@@ -451,7 +467,7 @@ const char *DataPacketDescriptor::getFieldName(void *object, int field) const
         "t5",
         "routing",
     };
-    return (field>=0 && field<18) ? fieldNames[field] : NULL;
+    return (field>=0 && field<19) ? fieldNames[field] : NULL;
 }
 
 int DataPacketDescriptor::findField(void *object, const char *fieldName) const
@@ -460,22 +476,23 @@ int DataPacketDescriptor::findField(void *object, const char *fieldName) const
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
     if (fieldName[0]=='s' && strcmp(fieldName, "srcNode")==0) return base+0;
     if (fieldName[0]=='d' && strcmp(fieldName, "dstNode")==0) return base+1;
-    if (fieldName[0]=='t' && strcmp(fieldName, "ttl")==0) return base+2;
-    if (fieldName[0]=='l' && strcmp(fieldName, "lastRouter")==0) return base+3;
-    if (fieldName[0]=='l' && strcmp(fieldName, "l2")==0) return base+4;
-    if (fieldName[0]=='l' && strcmp(fieldName, "l3")==0) return base+5;
-    if (fieldName[0]=='l' && strcmp(fieldName, "l4")==0) return base+6;
-    if (fieldName[0]=='l' && strcmp(fieldName, "lastQueue")==0) return base+7;
-    if (fieldName[0]=='q' && strcmp(fieldName, "q2")==0) return base+8;
-    if (fieldName[0]=='q' && strcmp(fieldName, "q3")==0) return base+9;
-    if (fieldName[0]=='q' && strcmp(fieldName, "q4")==0) return base+10;
-    if (fieldName[0]=='q' && strcmp(fieldName, "q5")==0) return base+11;
-    if (fieldName[0]=='l' && strcmp(fieldName, "lastTS")==0) return base+12;
-    if (fieldName[0]=='t' && strcmp(fieldName, "t2")==0) return base+13;
-    if (fieldName[0]=='t' && strcmp(fieldName, "t3")==0) return base+14;
-    if (fieldName[0]=='t' && strcmp(fieldName, "t4")==0) return base+15;
-    if (fieldName[0]=='t' && strcmp(fieldName, "t5")==0) return base+16;
-    if (fieldName[0]=='r' && strcmp(fieldName, "routing")==0) return base+17;
+    if (fieldName[0]=='f' && strcmp(fieldName, "flow_id")==0) return base+2;
+    if (fieldName[0]=='t' && strcmp(fieldName, "ttl")==0) return base+3;
+    if (fieldName[0]=='l' && strcmp(fieldName, "lastRouter")==0) return base+4;
+    if (fieldName[0]=='l' && strcmp(fieldName, "l2")==0) return base+5;
+    if (fieldName[0]=='l' && strcmp(fieldName, "l3")==0) return base+6;
+    if (fieldName[0]=='l' && strcmp(fieldName, "l4")==0) return base+7;
+    if (fieldName[0]=='l' && strcmp(fieldName, "lastQueue")==0) return base+8;
+    if (fieldName[0]=='q' && strcmp(fieldName, "q2")==0) return base+9;
+    if (fieldName[0]=='q' && strcmp(fieldName, "q3")==0) return base+10;
+    if (fieldName[0]=='q' && strcmp(fieldName, "q4")==0) return base+11;
+    if (fieldName[0]=='q' && strcmp(fieldName, "q5")==0) return base+12;
+    if (fieldName[0]=='l' && strcmp(fieldName, "lastTS")==0) return base+13;
+    if (fieldName[0]=='t' && strcmp(fieldName, "t2")==0) return base+14;
+    if (fieldName[0]=='t' && strcmp(fieldName, "t3")==0) return base+15;
+    if (fieldName[0]=='t' && strcmp(fieldName, "t4")==0) return base+16;
+    if (fieldName[0]=='t' && strcmp(fieldName, "t5")==0) return base+17;
+    if (fieldName[0]=='r' && strcmp(fieldName, "routing")==0) return base+18;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
@@ -500,6 +517,7 @@ const char *DataPacketDescriptor::getFieldTypeString(void *object, int field) co
         "int",
         "int",
         "int",
+        "int",
         "double",
         "double",
         "double",
@@ -507,7 +525,7 @@ const char *DataPacketDescriptor::getFieldTypeString(void *object, int field) co
         "double",
         "int",
     };
-    return (field>=0 && field<18) ? fieldTypeStrings[field] : NULL;
+    return (field>=0 && field<19) ? fieldTypeStrings[field] : NULL;
 }
 
 const char *DataPacketDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
@@ -549,22 +567,23 @@ std::string DataPacketDescriptor::getFieldAsString(void *object, int field, int 
     switch (field) {
         case 0: return long2string(pp->getSrcNode());
         case 1: return long2string(pp->getDstNode());
-        case 2: return long2string(pp->getTtl());
-        case 3: return long2string(pp->getLastRouter());
-        case 4: return long2string(pp->getL2());
-        case 5: return long2string(pp->getL3());
-        case 6: return long2string(pp->getL4());
-        case 7: return long2string(pp->getLastQueue());
-        case 8: return long2string(pp->getQ2());
-        case 9: return long2string(pp->getQ3());
-        case 10: return long2string(pp->getQ4());
-        case 11: return long2string(pp->getQ5());
-        case 12: return double2string(pp->getLastTS());
-        case 13: return double2string(pp->getT2());
-        case 14: return double2string(pp->getT3());
-        case 15: return double2string(pp->getT4());
-        case 16: return double2string(pp->getT5());
-        case 17: return long2string(pp->getRouting());
+        case 2: return long2string(pp->getFlow_id());
+        case 3: return long2string(pp->getTtl());
+        case 4: return long2string(pp->getLastRouter());
+        case 5: return long2string(pp->getL2());
+        case 6: return long2string(pp->getL3());
+        case 7: return long2string(pp->getL4());
+        case 8: return long2string(pp->getLastQueue());
+        case 9: return long2string(pp->getQ2());
+        case 10: return long2string(pp->getQ3());
+        case 11: return long2string(pp->getQ4());
+        case 12: return long2string(pp->getQ5());
+        case 13: return double2string(pp->getLastTS());
+        case 14: return double2string(pp->getT2());
+        case 15: return double2string(pp->getT3());
+        case 16: return double2string(pp->getT4());
+        case 17: return double2string(pp->getT5());
+        case 18: return long2string(pp->getRouting());
         default: return "";
     }
 }
@@ -581,22 +600,23 @@ bool DataPacketDescriptor::setFieldAsString(void *object, int field, int i, cons
     switch (field) {
         case 0: pp->setSrcNode(string2long(value)); return true;
         case 1: pp->setDstNode(string2long(value)); return true;
-        case 2: pp->setTtl(string2long(value)); return true;
-        case 3: pp->setLastRouter(string2long(value)); return true;
-        case 4: pp->setL2(string2long(value)); return true;
-        case 5: pp->setL3(string2long(value)); return true;
-        case 6: pp->setL4(string2long(value)); return true;
-        case 7: pp->setLastQueue(string2long(value)); return true;
-        case 8: pp->setQ2(string2long(value)); return true;
-        case 9: pp->setQ3(string2long(value)); return true;
-        case 10: pp->setQ4(string2long(value)); return true;
-        case 11: pp->setQ5(string2long(value)); return true;
-        case 12: pp->setLastTS(string2double(value)); return true;
-        case 13: pp->setT2(string2double(value)); return true;
-        case 14: pp->setT3(string2double(value)); return true;
-        case 15: pp->setT4(string2double(value)); return true;
-        case 16: pp->setT5(string2double(value)); return true;
-        case 17: pp->setRouting(string2long(value)); return true;
+        case 2: pp->setFlow_id(string2long(value)); return true;
+        case 3: pp->setTtl(string2long(value)); return true;
+        case 4: pp->setLastRouter(string2long(value)); return true;
+        case 5: pp->setL2(string2long(value)); return true;
+        case 6: pp->setL3(string2long(value)); return true;
+        case 7: pp->setL4(string2long(value)); return true;
+        case 8: pp->setLastQueue(string2long(value)); return true;
+        case 9: pp->setQ2(string2long(value)); return true;
+        case 10: pp->setQ3(string2long(value)); return true;
+        case 11: pp->setQ4(string2long(value)); return true;
+        case 12: pp->setQ5(string2long(value)); return true;
+        case 13: pp->setLastTS(string2double(value)); return true;
+        case 14: pp->setT2(string2double(value)); return true;
+        case 15: pp->setT3(string2double(value)); return true;
+        case 16: pp->setT4(string2double(value)); return true;
+        case 17: pp->setT5(string2double(value)); return true;
+        case 18: pp->setRouting(string2long(value)); return true;
         default: return false;
     }
 }

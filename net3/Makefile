@@ -45,12 +45,14 @@ OBJS = \
     $O/TrafficController.o \
     $O/messages/ControlPacket_m.o \
     $O/messages/DataPacket_m.o \
+    $O/messages/NewControlPacket_m.o \
     $O/messages/TimerNextPacket_m.o
 
 # Message files
 MSGFILES = \
     messages/ControlPacket.msg \
     messages/DataPacket.msg \
+    messages/NewControlPacket.msg \
     messages/TimerNextPacket.msg
 
 #------------------------------------------------------------------------------
@@ -168,6 +170,8 @@ $O/messages/ControlPacket_m.o: messages/ControlPacket_m.cc \
 	messages/ControlPacket_m.h
 $O/messages/DataPacket_m.o: messages/DataPacket_m.cc \
 	messages/DataPacket_m.h
+$O/messages/NewControlPacket_m.o: messages/NewControlPacket_m.cc \
+	messages/NewControlPacket_m.h
 $O/messages/TimerNextPacket_m.o: messages/TimerNextPacket_m.cc \
 	messages/TimerNextPacket_m.h
 

@@ -25,6 +25,8 @@
  * {
  *     int target;
  *     double lambda;
+ *     int flow_id;
+ *     double bandwidth;
  * }
  * </pre>
  */
@@ -33,6 +35,8 @@ class TimerNextPacket : public ::cMessage
   protected:
     int target_var;
     double lambda_var;
+    int flow_id_var;
+    double bandwidth_var;
 
   private:
     void copy(const TimerNextPacket& other);
@@ -55,6 +59,10 @@ class TimerNextPacket : public ::cMessage
     virtual void setTarget(int target);
     virtual double getLambda() const;
     virtual void setLambda(double lambda);
+    virtual int getFlow_id() const;
+    virtual void setFlow_id(int flow_id);
+    virtual double getBandwidth() const;
+    virtual void setBandwidth(double bandwidth);
 };
 
 inline void doPacking(cCommBuffer *b, TimerNextPacket& obj) {obj.parsimPack(b);}

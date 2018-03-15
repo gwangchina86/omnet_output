@@ -42,6 +42,8 @@ void Application::initialize()
     numPackets = 0;
 
 
+
+
     Statistic::instance()->setGeneration(genT);
     Statistic::instance()->setMaxSim(MAXSIM);
     Statistic::instance()->setLambda(lambdaFactor);
@@ -76,13 +78,16 @@ void Application::handleMessage(cMessage *msg)
                 break;
         }
 
-
+        TimerNextPacket *time =  check_and_cast<TimerNextPacket *>(msg);
+        int flow_id = time->getFlow_id();
+        double bandwidth = time->getBandwidth();
         data->setBitLength(size);
         data->setTtl(numRx);
-
         data->setDstNode(dest);
         data->setSrcNode(id);
         data->setLastTS(simTime().dbl());
+        data->setFlow_id(flow_id);
+
 
         send(data, "out");
 
@@ -92,7 +97,13 @@ void Application::handleMessage(cMessage *msg)
 
 
         if (simTime() < MAXSIM) {
-            simtime_t etime= exponential(1.0/lambda);
+
+            simtime_t etime;
+            if(bandwidth == 0.01 || bandwidth == 0) etime = exponential(1.0/lambda);
+            else{
+                etime = size/(bandwidth*1024*1024);
+                cout<<"bandwidth "<<endl;
+            }
             scheduleAt(simTime() + etime, msg);
         }
         else {
@@ -101,20 +112,20 @@ void Application::handleMessage(cMessage *msg)
     }
 
     else {
+
         ControlPacket *data = check_and_cast<ControlPacket *>(msg);
         double flowRatio = data->getData();
+        int flow_id = data->getFlow_id();
         lambda = lambdaFactor*flowRatio;
-        cout << "lambda"<< lambda<<endl;
-        cout<<"id="<<id<<"flowRatio"<<flowRatio<<endl;
-        cout<<"dst="<<dest<<endl;
 
         //lambda = lambdaMax/numRx;
         if(lambda == 0) {
             lambda = 1;
-            cout<<"lambda=0, id="<<id<<",dst="<<dest<<"flow_r="<<flowRatio<<endl;
         }
         interArrival = new TimerNextPacket("timer");
         interArrival->setLambda(1.0/lambda);
+        interArrival->setFlow_id(flow_id);
+        interArrival->setBandwidth(flowRatio);
         if (dest != id)
             scheduleAt(simTime() + 1.0/lambda, interArrival);
             ev << "Ratio: " << flowRatio << "   lambda: " << lambda << endl;

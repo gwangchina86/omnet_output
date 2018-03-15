@@ -24,6 +24,7 @@
  * packet ControlPacket
  * {
  *     double data;
+ *     int flow_id;
  * }
  * </pre>
  */
@@ -31,6 +32,7 @@ class ControlPacket : public ::cPacket
 {
   protected:
     double data_var;
+    int flow_id_var;
 
   private:
     void copy(const ControlPacket& other);
@@ -51,6 +53,8 @@ class ControlPacket : public ::cPacket
     // field getter/setter methods
     virtual double getData() const;
     virtual void setData(double data);
+    virtual int getFlow_id() const;
+    virtual void setFlow_id(int flow_id);
 };
 
 inline void doPacking(cCommBuffer *b, ControlPacket& obj) {obj.parsimPack(b);}

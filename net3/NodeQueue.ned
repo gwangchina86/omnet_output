@@ -21,7 +21,7 @@ package networksimulator;
 simple NodeQueue
 {
     parameters:
-        int capacity @unit(byte) = default (1024B);
+        int capacity @unit(byte) = default (512B);
         @display("i=block/queue");
     gates:
         input in;

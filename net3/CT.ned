@@ -18,27 +18,15 @@ package networksimulator;
 //
 // TODO auto-generated module
 //
-simple Application
+simple CT
 {
-
     parameters:
-        int id;
-        double lambda;
-        int dest;
-        int generation;
+        double nodeRatio;
         int numNodes;
-   
-        
-
-
-        double simulationDuration;
-
-
-        @display("i=block/browser");
-
+        int id;
+        string folderName;
+        int flow_num;
 
     gates:
-        output out;
-        input tcontrol;
-        
+        output out[];
 }

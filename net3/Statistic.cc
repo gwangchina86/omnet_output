@@ -35,6 +35,7 @@ Statistic::Statistic() {
     DropsV =  vector<vector<double>  > (100, vector<double>(100, 0));
     Jitter = vector<vector<vector<double> > > (100, vector<vector<double> >(100, vector<double>()));
     drops = 0;
+    flow_id = 0;
 
 
 
@@ -59,6 +60,7 @@ void Statistic::setMaxSim(double ms) {
 
 void Statistic::setRouting(int src, int dst, double r) {
     (Routing)[src][dst] = r;
+    cout<<"set routing src="<<src<<",dst="<<dst<<", r="<<r<<endl;
 }
 
 void Statistic::infoTS(simtime_t time) {
@@ -145,6 +147,10 @@ void Statistic::setNumNodes(int n) {
 
 void Statistic::setRoutingParaam(double r) {
     routingP = r;
+}
+
+void Statistic::setFlowId(int n){
+    flow_id = n;
 }
 
 

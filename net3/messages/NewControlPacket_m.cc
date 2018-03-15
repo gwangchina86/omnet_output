@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by nedtool 4.6 from messages/ControlPacket.msg.
+// Generated file, do not edit! Created by nedtool 4.6 from messages/NewControlPacket.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:
@@ -10,7 +10,7 @@
 
 #include <iostream>
 #include <sstream>
-#include "ControlPacket_m.h"
+#include "NewControlPacket_m.h"
 
 USING_NAMESPACE
 
@@ -53,24 +53,32 @@ inline std::ostream& operator<<(std::ostream& out, const std::vector<T,A>& vec)
 template<typename T>
 inline std::ostream& operator<<(std::ostream& out,const T&) {return out;}
 
-Register_Class(ControlPacket);
+Register_Class(NewControlPacket);
 
-ControlPacket::ControlPacket(const char *name, int kind) : ::cPacket(name,kind)
+NewControlPacket::NewControlPacket(const char *name, int kind) : ::cPacket(name,kind)
 {
+    data_arraysize = 0;
     this->data_var = 0;
-    this->flow_id_var = 0;
+    flow_set_arraysize = 0;
+    this->flow_set_var = 0;
 }
 
-ControlPacket::ControlPacket(const ControlPacket& other) : ::cPacket(other)
+NewControlPacket::NewControlPacket(const NewControlPacket& other) : ::cPacket(other)
 {
+    data_arraysize = 0;
+    this->data_var = 0;
+    flow_set_arraysize = 0;
+    this->flow_set_var = 0;
     copy(other);
 }
 
-ControlPacket::~ControlPacket()
+NewControlPacket::~NewControlPacket()
 {
+    delete [] data_var;
+    delete [] flow_set_var;
 }
 
-ControlPacket& ControlPacket::operator=(const ControlPacket& other)
+NewControlPacket& NewControlPacket::operator=(const NewControlPacket& other)
 {
     if (this==&other) return *this;
     ::cPacket::operator=(other);
@@ -78,51 +86,115 @@ ControlPacket& ControlPacket::operator=(const ControlPacket& other)
     return *this;
 }
 
-void ControlPacket::copy(const ControlPacket& other)
+void NewControlPacket::copy(const NewControlPacket& other)
 {
-    this->data_var = other.data_var;
-    this->flow_id_var = other.flow_id_var;
+    delete [] this->data_var;
+    this->data_var = (other.data_arraysize==0) ? NULL : new double[other.data_arraysize];
+    data_arraysize = other.data_arraysize;
+    for (unsigned int i=0; i<data_arraysize; i++)
+        this->data_var[i] = other.data_var[i];
+    delete [] this->flow_set_var;
+    this->flow_set_var = (other.flow_set_arraysize==0) ? NULL : new int[other.flow_set_arraysize];
+    flow_set_arraysize = other.flow_set_arraysize;
+    for (unsigned int i=0; i<flow_set_arraysize; i++)
+        this->flow_set_var[i] = other.flow_set_var[i];
 }
 
-void ControlPacket::parsimPack(cCommBuffer *b)
+void NewControlPacket::parsimPack(cCommBuffer *b)
 {
     ::cPacket::parsimPack(b);
-    doPacking(b,this->data_var);
-    doPacking(b,this->flow_id_var);
+    b->pack(data_arraysize);
+    doPacking(b,this->data_var,data_arraysize);
+    b->pack(flow_set_arraysize);
+    doPacking(b,this->flow_set_var,flow_set_arraysize);
 }
 
-void ControlPacket::parsimUnpack(cCommBuffer *b)
+void NewControlPacket::parsimUnpack(cCommBuffer *b)
 {
     ::cPacket::parsimUnpack(b);
-    doUnpacking(b,this->data_var);
-    doUnpacking(b,this->flow_id_var);
+    delete [] this->data_var;
+    b->unpack(data_arraysize);
+    if (data_arraysize==0) {
+        this->data_var = 0;
+    } else {
+        this->data_var = new double[data_arraysize];
+        doUnpacking(b,this->data_var,data_arraysize);
+    }
+    delete [] this->flow_set_var;
+    b->unpack(flow_set_arraysize);
+    if (flow_set_arraysize==0) {
+        this->flow_set_var = 0;
+    } else {
+        this->flow_set_var = new int[flow_set_arraysize];
+        doUnpacking(b,this->flow_set_var,flow_set_arraysize);
+    }
 }
 
-double ControlPacket::getData() const
+void NewControlPacket::setDataArraySize(unsigned int size)
 {
-    return data_var;
+    double *data_var2 = (size==0) ? NULL : new double[size];
+    unsigned int sz = data_arraysize < size ? data_arraysize : size;
+    for (unsigned int i=0; i<sz; i++)
+        data_var2[i] = this->data_var[i];
+    for (unsigned int i=sz; i<size; i++)
+        data_var2[i] = 0;
+    data_arraysize = size;
+    delete [] this->data_var;
+    this->data_var = data_var2;
 }
 
-void ControlPacket::setData(double data)
+unsigned int NewControlPacket::getDataArraySize() const
 {
-    this->data_var = data;
+    return data_arraysize;
 }
 
-int ControlPacket::getFlow_id() const
+double NewControlPacket::getData(unsigned int k) const
 {
-    return flow_id_var;
+    if (k>=data_arraysize) throw cRuntimeError("Array of size %d indexed by %d", data_arraysize, k);
+    return data_var[k];
 }
 
-void ControlPacket::setFlow_id(int flow_id)
+void NewControlPacket::setData(unsigned int k, double data)
 {
-    this->flow_id_var = flow_id;
+    if (k>=data_arraysize) throw cRuntimeError("Array of size %d indexed by %d", data_arraysize, k);
+    this->data_var[k] = data;
 }
 
-class ControlPacketDescriptor : public cClassDescriptor
+void NewControlPacket::setFlow_setArraySize(unsigned int size)
+{
+    int *flow_set_var2 = (size==0) ? NULL : new int[size];
+    unsigned int sz = flow_set_arraysize < size ? flow_set_arraysize : size;
+    for (unsigned int i=0; i<sz; i++)
+        flow_set_var2[i] = this->flow_set_var[i];
+    for (unsigned int i=sz; i<size; i++)
+        flow_set_var2[i] = 0;
+    flow_set_arraysize = size;
+    delete [] this->flow_set_var;
+    this->flow_set_var = flow_set_var2;
+}
+
+unsigned int NewControlPacket::getFlow_setArraySize() const
+{
+    return flow_set_arraysize;
+}
+
+int NewControlPacket::getFlow_set(unsigned int k) const
+{
+    if (k>=flow_set_arraysize) throw cRuntimeError("Array of size %d indexed by %d", flow_set_arraysize, k);
+    return flow_set_var[k];
+}
+
+void NewControlPacket::setFlow_set(unsigned int k, int flow_set)
+{
+    if (k>=flow_set_arraysize) throw cRuntimeError("Array of size %d indexed by %d", flow_set_arraysize, k);
+    this->flow_set_var[k] = flow_set;
+}
+
+class NewControlPacketDescriptor : public cClassDescriptor
 {
   public:
-    ControlPacketDescriptor();
-    virtual ~ControlPacketDescriptor();
+    NewControlPacketDescriptor();
+    virtual ~NewControlPacketDescriptor();
 
     virtual bool doesSupport(cObject *obj) const;
     virtual const char *getProperty(const char *propertyname) const;
@@ -141,34 +213,34 @@ class ControlPacketDescriptor : public cClassDescriptor
     virtual void *getFieldStructPointer(void *object, int field, int i) const;
 };
 
-Register_ClassDescriptor(ControlPacketDescriptor);
+Register_ClassDescriptor(NewControlPacketDescriptor);
 
-ControlPacketDescriptor::ControlPacketDescriptor() : cClassDescriptor("ControlPacket", "cPacket")
+NewControlPacketDescriptor::NewControlPacketDescriptor() : cClassDescriptor("NewControlPacket", "cPacket")
 {
 }
 
-ControlPacketDescriptor::~ControlPacketDescriptor()
+NewControlPacketDescriptor::~NewControlPacketDescriptor()
 {
 }
 
-bool ControlPacketDescriptor::doesSupport(cObject *obj) const
+bool NewControlPacketDescriptor::doesSupport(cObject *obj) const
 {
-    return dynamic_cast<ControlPacket *>(obj)!=NULL;
+    return dynamic_cast<NewControlPacket *>(obj)!=NULL;
 }
 
-const char *ControlPacketDescriptor::getProperty(const char *propertyname) const
+const char *NewControlPacketDescriptor::getProperty(const char *propertyname) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     return basedesc ? basedesc->getProperty(propertyname) : NULL;
 }
 
-int ControlPacketDescriptor::getFieldCount(void *object) const
+int NewControlPacketDescriptor::getFieldCount(void *object) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     return basedesc ? 2+basedesc->getFieldCount(object) : 2;
 }
 
-unsigned int ControlPacketDescriptor::getFieldTypeFlags(void *object, int field) const
+unsigned int NewControlPacketDescriptor::getFieldTypeFlags(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -177,13 +249,13 @@ unsigned int ControlPacketDescriptor::getFieldTypeFlags(void *object, int field)
         field -= basedesc->getFieldCount(object);
     }
     static unsigned int fieldTypeFlags[] = {
-        FD_ISEDITABLE,
-        FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
+        FD_ISARRAY | FD_ISEDITABLE,
     };
     return (field>=0 && field<2) ? fieldTypeFlags[field] : 0;
 }
 
-const char *ControlPacketDescriptor::getFieldName(void *object, int field) const
+const char *NewControlPacketDescriptor::getFieldName(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -193,21 +265,21 @@ const char *ControlPacketDescriptor::getFieldName(void *object, int field) const
     }
     static const char *fieldNames[] = {
         "data",
-        "flow_id",
+        "flow_set",
     };
     return (field>=0 && field<2) ? fieldNames[field] : NULL;
 }
 
-int ControlPacketDescriptor::findField(void *object, const char *fieldName) const
+int NewControlPacketDescriptor::findField(void *object, const char *fieldName) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     int base = basedesc ? basedesc->getFieldCount(object) : 0;
     if (fieldName[0]=='d' && strcmp(fieldName, "data")==0) return base+0;
-    if (fieldName[0]=='f' && strcmp(fieldName, "flow_id")==0) return base+1;
+    if (fieldName[0]=='f' && strcmp(fieldName, "flow_set")==0) return base+1;
     return basedesc ? basedesc->findField(object, fieldName) : -1;
 }
 
-const char *ControlPacketDescriptor::getFieldTypeString(void *object, int field) const
+const char *NewControlPacketDescriptor::getFieldTypeString(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -222,7 +294,7 @@ const char *ControlPacketDescriptor::getFieldTypeString(void *object, int field)
     return (field>=0 && field<2) ? fieldTypeStrings[field] : NULL;
 }
 
-const char *ControlPacketDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
+const char *NewControlPacketDescriptor::getFieldProperty(void *object, int field, const char *propertyname) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -235,7 +307,7 @@ const char *ControlPacketDescriptor::getFieldProperty(void *object, int field, c
     }
 }
 
-int ControlPacketDescriptor::getArraySize(void *object, int field) const
+int NewControlPacketDescriptor::getArraySize(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -243,13 +315,15 @@ int ControlPacketDescriptor::getArraySize(void *object, int field) const
             return basedesc->getArraySize(object, field);
         field -= basedesc->getFieldCount(object);
     }
-    ControlPacket *pp = (ControlPacket *)object; (void)pp;
+    NewControlPacket *pp = (NewControlPacket *)object; (void)pp;
     switch (field) {
+        case 0: return pp->getDataArraySize();
+        case 1: return pp->getFlow_setArraySize();
         default: return 0;
     }
 }
 
-std::string ControlPacketDescriptor::getFieldAsString(void *object, int field, int i) const
+std::string NewControlPacketDescriptor::getFieldAsString(void *object, int field, int i) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -257,15 +331,15 @@ std::string ControlPacketDescriptor::getFieldAsString(void *object, int field, i
             return basedesc->getFieldAsString(object,field,i);
         field -= basedesc->getFieldCount(object);
     }
-    ControlPacket *pp = (ControlPacket *)object; (void)pp;
+    NewControlPacket *pp = (NewControlPacket *)object; (void)pp;
     switch (field) {
-        case 0: return double2string(pp->getData());
-        case 1: return long2string(pp->getFlow_id());
+        case 0: return double2string(pp->getData(i));
+        case 1: return long2string(pp->getFlow_set(i));
         default: return "";
     }
 }
 
-bool ControlPacketDescriptor::setFieldAsString(void *object, int field, int i, const char *value) const
+bool NewControlPacketDescriptor::setFieldAsString(void *object, int field, int i, const char *value) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -273,15 +347,15 @@ bool ControlPacketDescriptor::setFieldAsString(void *object, int field, int i, c
             return basedesc->setFieldAsString(object,field,i,value);
         field -= basedesc->getFieldCount(object);
     }
-    ControlPacket *pp = (ControlPacket *)object; (void)pp;
+    NewControlPacket *pp = (NewControlPacket *)object; (void)pp;
     switch (field) {
-        case 0: pp->setData(string2double(value)); return true;
-        case 1: pp->setFlow_id(string2long(value)); return true;
+        case 0: pp->setData(i,string2double(value)); return true;
+        case 1: pp->setFlow_set(i,string2long(value)); return true;
         default: return false;
     }
 }
 
-const char *ControlPacketDescriptor::getFieldStructName(void *object, int field) const
+const char *NewControlPacketDescriptor::getFieldStructName(void *object, int field) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -294,7 +368,7 @@ const char *ControlPacketDescriptor::getFieldStructName(void *object, int field)
     };
 }
 
-void *ControlPacketDescriptor::getFieldStructPointer(void *object, int field, int i) const
+void *NewControlPacketDescriptor::getFieldStructPointer(void *object, int field, int i) const
 {
     cClassDescriptor *basedesc = getBaseClassDescriptor();
     if (basedesc) {
@@ -302,7 +376,7 @@ void *ControlPacketDescriptor::getFieldStructPointer(void *object, int field, in
             return basedesc->getFieldStructPointer(object, field, i);
         field -= basedesc->getFieldCount(object);
     }
-    ControlPacket *pp = (ControlPacket *)object; (void)pp;
+    NewControlPacket *pp = (NewControlPacket *)object; (void)pp;
     switch (field) {
         default: return NULL;
     }

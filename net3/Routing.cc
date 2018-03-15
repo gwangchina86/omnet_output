@@ -60,7 +60,8 @@ void Routing::handleMessage(cMessage *msg)
         delete msg;
     }
     else { // Tant in com out
-        int destPort = outPort[data->getDstNode()];;
+        int flow_id = data->getFlow_id();
+        int destPort = outPort[flow_id][data->getDstNode()];
         data->setTtl(data->getTtl()-1);
         send(msg, "out", destPort);
 
@@ -72,31 +73,38 @@ void Routing::handleMessage(cMessage *msg)
 
 }
 
-void Routing::getRoutingInfo(int id, int rData[]) {
+void Routing::getRoutingInfo(int id, vector<vector<int>> rData) {
+     for (int x =0; x < flow_num; x++){
+         stringstream stream;
+         stream<<x;
+         string string_temp=stream.str();
+         string txtName = "/Routing" + string_temp + ".txt";
+         ifstream myfile (folderName + txtName);
+         double val;
 
-     ifstream myfile (folderName + "/Routing.txt");
-     double val;
+              if (myfile.is_open()) {
+                  int i = 0;
+                  while (id != i) {
+                      for(int k = 0; k < numTx; k++) {
+                          string aux;
+                          getline(myfile, aux, ',');
+                      }
+                      //myfile >> val;
+                      i++;
+                  }
 
-     if (myfile.is_open()) {
-         int i = 0;
-         while (id != i) {
-             for(int k = 0; k < numTx; k++) {
-                 string aux;
-                 getline(myfile, aux, ',');
-             }
-             //myfile >> val;
-             i++;
-         }
+                  for(int k = 0; k < numTx; k++) {
+                      string aux;
+                      getline(myfile, aux, ',');
+                      val = stod(aux);
+                      rData[x][k] = val;
+                  }
 
-         for(int k = 0; k < numTx; k++) {
-             string aux;
-             getline(myfile, aux, ',');
-             val = stod(aux);
-             rData[k] = val;
-         }
-
-         myfile.close();
+                  myfile.close();
+              }
      }
+
+
 
 
 }
