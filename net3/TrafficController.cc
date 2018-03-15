@@ -25,6 +25,7 @@ void TrafficController::initialize()
     numNodes = par("numNodes");
     folderName = par("folderName").stdstringValue();
     flow_num = par("flow_num");
+    Flow_info = vector<vector<int>  > (100, vector<int>(100, 0));
 
 
     int MODE = 3;
@@ -65,7 +66,7 @@ void TrafficController::initialize()
     }
     else {
         // READED FROM FILE
-        getTrafficFromFile(Flow_info, Bandwidth);
+//        getTrafficFromFile(Flow_info, Bandwidth);
 
         for (int j = 0; j < flow_num; j++){
             getTrafficInfo(id, j, flowRatio);
@@ -87,7 +88,8 @@ void TrafficController::handleMessage(cMessage *msg)
 {
     // TODO - Generated method body
 }
-void TrafficController::getTrafficFromFile(vector< vector <int> > Flow_info, vector<double> Bandwidth){
+void TrafficController::getTrafficFromFile(vector< vector <int> > &Flow_info, vector<double> &Bandwidth){
+
     ifstream myfile (folderName + "/Traffic.txt");
     if(myfile.is_open()){
         for(int i = 0; i < flow_num; i++){
@@ -102,7 +104,7 @@ void TrafficController::getTrafficFromFile(vector< vector <int> > Flow_info, vec
             getline(myfile, aux,',');//Df
             Flow_info[i][0]=src;
             Flow_info[i][1]=dst;
-            Bandwidth.push_back(bw);
+            Bandwidth[i] = bw;
         }
     }
     myfile.close();
@@ -113,9 +115,29 @@ void TrafficController::getTrafficInfo(int id, int flow_id, double rData[]) {
          rData[i]=0.01;
      }
      rData[id]=-1;
-     if (Flow_info[flow_id][0] == id){
-         int dest = Flow_info[flow_id][1];
-         rData[dest] = Bandwidth[flow_id];
-     }
+     ifstream myfile (folderName + "/Traffic.txt");
+         if(myfile.is_open()){
+             for(int i = 0; i < flow_num; i++){
+                 string aux;
+                 getline(myfile, aux, ',');//flow_id
+                 getline(myfile, aux, ',');//src
+                 int src = stoi(aux);
+                 getline(myfile, aux, ',');//dst
+                 int dst = stoi(aux);
+                 getline(myfile, aux,',');//df
+                 double bw = stod(aux);
+                 getline(myfile, aux,',');//Df
+                 if (i == flow_id){
+                     if (src == id){
+                         rData[dst] = bw;
+                     }
+                     break;
+
+                 }
+
+             }
+         }
+         myfile.close();
+
 
 }

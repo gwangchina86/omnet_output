@@ -52,7 +52,7 @@ class Routing : public cSimpleModule
   protected:
     virtual void initialize();
     virtual void handleMessage(cMessage *msg);
-    void getRoutingInfo(int id, vector<vector<int> >outPort);
+    void getRoutingInfo(int id, int flow_id, int rData[]);
 
 };
 

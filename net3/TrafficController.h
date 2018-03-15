@@ -48,7 +48,7 @@ class TrafficController : public cSimpleModule
         virtual void initialize();
         virtual void handleMessage(cMessage *msg);
         void getTrafficInfo(int id, int flow_id, double rData[]);
-        void getTrafficFromFile(vector< vector <int> > Flow_info, vector<double> Bandwidth);
+        void getTrafficFromFile(vector< vector <int> > &Flow_info, vector<double> &Bandwidth);
 };
 
 #endif

@@ -1,12 +1,12 @@
 #
-# OMNeT++/OMNEST Makefile for net3
+# OMNeT++/OMNEST Makefile for net2
 #
 # This file was generated with the command:
 #  opp_makemake -f --deep -O out
 #
 
 # Name of target to be created (-o option)
-TARGET = net3$(EXE_SUFFIX)
+TARGET = net2$(EXE_SUFFIX)
 
 # User interface (uncomment one) (-u option)
 USERIF_LIBS = $(ALL_ENV_LIBS) # that is, $(TKENV_LIBS) $(CMDENV_LIBS)
@@ -21,8 +21,7 @@ INCLUDE_PATH = \
     -Idoc/doxy/search \
     -Idoc/neddoc \
     -Imessages \
-    -Ioutput \
-    -Iresults
+    -Ioutput
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -43,6 +42,9 @@ OBJS = \
     $O/Routing.o \
     $O/Statistic.o \
     $O/TrafficController.o \
+    $O/messages/._ControlPacket_m.o \
+    $O/messages/._DataPacket_m.o \
+    $O/messages/._TimerNextPacket_m.o \
     $O/messages/ControlPacket_m.o \
     $O/messages/DataPacket_m.o \
     $O/messages/NewControlPacket_m.o \
@@ -50,6 +52,9 @@ OBJS = \
 
 # Message files
 MSGFILES = \
+    messages/._ControlPacket.msg \
+    messages/._DataPacket.msg \
+    messages/._TimerNextPacket.msg \
     messages/ControlPacket.msg \
     messages/DataPacket.msg \
     messages/NewControlPacket.msg \
@@ -125,7 +130,7 @@ msgheaders: $(MSGFILES:.msg=_m.h)
 clean:
 	$(qecho) Cleaning...
 	$(Q)-rm -rf $O
-	$(Q)-rm -f net3 net3.exe libnet3.so libnet3.a libnet3.dll libnet3.dylib
+	$(Q)-rm -f net2 net2.exe libnet2.so libnet2.a libnet2.dll libnet2.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f doc/*_m.cc doc/*_m.h
 	$(Q)-rm -f doc/doxy/*_m.cc doc/doxy/*_m.h
@@ -133,14 +138,13 @@ clean:
 	$(Q)-rm -f doc/neddoc/*_m.cc doc/neddoc/*_m.h
 	$(Q)-rm -f messages/*_m.cc messages/*_m.h
 	$(Q)-rm -f output/*_m.cc output/*_m.h
-	$(Q)-rm -f results/*_m.cc results/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc doc/*.cc doc/doxy/*.cc doc/doxy/search/*.cc doc/neddoc/*.cc messages/*.cc output/*.cc results/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc doc/*.cc doc/doxy/*.cc doc/doxy/search/*.cc doc/neddoc/*.cc messages/*.cc output/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/Application.o: Application.cc \
@@ -166,6 +170,12 @@ $O/Statistic.o: Statistic.cc \
 $O/TrafficController.o: TrafficController.cc \
 	TrafficController.h \
 	messages/ControlPacket_m.h
+$O/messages/._ControlPacket_m.o: messages/._ControlPacket_m.cc \
+	messages/._ControlPacket_m.h
+$O/messages/._DataPacket_m.o: messages/._DataPacket_m.cc \
+	messages/._DataPacket_m.h
+$O/messages/._TimerNextPacket_m.o: messages/._TimerNextPacket_m.cc \
+	messages/._TimerNextPacket_m.h
 $O/messages/ControlPacket_m.o: messages/ControlPacket_m.cc \
 	messages/ControlPacket_m.h
 $O/messages/DataPacket_m.o: messages/DataPacket_m.cc \

@@ -34,9 +34,16 @@ void Routing::initialize()
     numNodes = par("numNodes");
     folderName = par("folderName").stdstringValue();
     flow_num = par("flow_num");
+    outPort = vector<vector<int>  > (100, vector<int>(100));
 
     int diff = numNodes - numTx;
-    getRoutingInfo(id-diff, outPort);
+    for (int i = 0; i < flow_num; i++){
+        int outPort_f[100];
+        getRoutingInfo(id-diff, i,outPort_f);
+
+
+    }
+
 
     Statistic::instance()->setNumNodes(numNodes);
     Statistic::instance()->setNumFlow(flow_num);
@@ -73,8 +80,9 @@ void Routing::handleMessage(cMessage *msg)
 
 }
 
-void Routing::getRoutingInfo(int id, vector<vector<int>> rData) {
-     for (int x =0; x < flow_num; x++){
+void Routing::getRoutingInfo(int id, int flow_id, int rData[]) {
+//     for (int x =0; x < flow_num; x++){
+         int x = flow_id;
          stringstream stream;
          stream<<x;
          string string_temp=stream.str();
@@ -97,12 +105,13 @@ void Routing::getRoutingInfo(int id, vector<vector<int>> rData) {
                       string aux;
                       getline(myfile, aux, ',');
                       val = stod(aux);
-                      rData[x][k] = val;
+                      rData[k] = val;
+                      outPort[flow_id][k] = val;
                   }
 
                   myfile.close();
               }
-     }
+//     }
 
 
 
