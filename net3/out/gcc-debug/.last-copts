@@ -1,1 +1,0 @@
--g -Wall   -fno-stack-protector  -DHAVE_PCAP -DXMLPARSER=libxml -DWITH_PARSIM -DWITH_NETBUILDER  -I. -Idoc -Idoc/doxy -Idoc/doxy/search -Idoc/neddoc -Imessages -Ioutput -Iresults -I/Users/byr/Downloads/omnetpp-4.6/include
