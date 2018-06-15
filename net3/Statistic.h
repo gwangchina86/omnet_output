@@ -24,7 +24,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-
+//#include <OutPortVector.h>
 using namespace std;
 
 
@@ -32,14 +32,14 @@ class Statistic {
 
   public:
     static Statistic *instance();
-    void infoTS(simtime_t time);
-    void setDelay(simtime_t time, int i, int j, double d);
+    void infoTS(simtime_t time, int numpakets, int flow_id, int size);
+    void setDelay(simtime_t time, int i, int j, double d, int flow_id, int size);
     // void setJitter(simtime_t time, int i, int j, double d);
     void setTraffic(simtime_t time, int i, int j, double t);
     void setRouting(int n, int r, double p);
     void setLambda(double l);
     void setGeneration(int genType);
-    void setLost(simtime_t time, int n, int p);
+    void setLost(simtime_t time, int n, int p, int flow_id, int size);
     void setLost(simtime_t time);
     void setNumTx(int n);
     void setNumFlow(int n);
@@ -48,8 +48,13 @@ class Statistic {
     void setMaxSim(double r);
     void setFolder(string folder);
     void setFlowId(int flow_id);
-
-    void printStats();
+    void printStats(simtime_t time);
+    void getRoutingById(int id, vector<vector<int> > *outPort);//根据id 获取相应routing
+    void getRoutingInfo(vector<vector<vector<int>>> *outportlist);// main geting routing
+    bool appShouldSend(int flow_id, int src, int dest);
+    void getTrafficInfo(int flow_id, double *bandwidth, int *src, int *dest); //读取traffic文件内容并记录
+    vector<vector<vector<int>>> outportlist  ;
+    vector<vector<int>> trafficlist; // [flow_id] = bandwith
 
   protected:
 
@@ -72,7 +77,9 @@ class Statistic {
     double lambdaMax;
     double routingP;
     int flow_num;
-
+    simtime_t endtime;
+    bool flag_for_isReadRouting;
+    bool flag_for_isReadTraffic;
 
     string folderName;
 
@@ -81,10 +88,16 @@ class Statistic {
     int flow_id;
     vector< vector< vector <double> > > Traffic;
     vector< vector <double> > Routing;
-    vector< vector< vector <double> > >  Delay;
-    vector< vector <double> >   DropsV;
-    vector< vector <vector <double> > >   Jitter;
+    vector< vector< vector < vector <double> > > >  Delay;
+//    vector< vector< vector < vector <int> > > > DelayPacketsSize;
+    vector< vector< vector < vector <double> > > >   Jitter;
+    vector< vector <vector <double> > >   DropsV;
     vector< vector <int> > Flow_info;
+    vector< vector<int>> FLow_path;
+    vector< long int> Numpackets;
+    vector< long int> SendPackets;
+    vector<long int> BandPakcetsSize;
+    vector<vector<vector<long int>>>BandFlowPathPacketsSize;
 
     void initLinkID();
 

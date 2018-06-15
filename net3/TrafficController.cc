@@ -69,12 +69,18 @@ void TrafficController::initialize()
 //        getTrafficFromFile(Flow_info, Bandwidth);
 
         for (int j = 0; j < flow_num; j++){
-            getTrafficInfo(id, j, flowRatio);
-            for (int i = 0; i < numNodes; i++) {
+            double bandwidth = 0;
+            int src=0,dest=0;
+            Statistic::instance()->setNumNodes(numNodes);
+            Statistic::instance()->setNumFlow(flow_num);
+            Statistic::instance()->setFolder(folderName);
+            Statistic::instance()->getTrafficInfo(j,&bandwidth, &src, &dest);
+            if(src == id ){
                 ControlPacket *data = new ControlPacket("trafficInfo");
-                data->setData(flowRatio[i]);
+                //cout<<"traffic flow_Id="<<j<<",src"<<src<<",dest="<<dest<<endl;
+                data->setData(bandwidth);
                 data->setFlow_id(j);
-                send(data, "out", i);
+                send(data, "out", dest);
             }
 
         }
@@ -88,28 +94,8 @@ void TrafficController::handleMessage(cMessage *msg)
 {
     // TODO - Generated method body
 }
-void TrafficController::getTrafficFromFile(vector< vector <int> > &Flow_info, vector<double> &Bandwidth){
 
-    ifstream myfile (folderName + "/Traffic.txt");
-    if(myfile.is_open()){
-        for(int i = 0; i < flow_num; i++){
-            string aux;
-            getline(myfile, aux, ',');//flow_id
-            getline(myfile, aux, ',');//src
-            int src = stoi(aux);
-            getline(myfile, aux, ',');//dst
-            int dst = stoi(aux);
-            getline(myfile, aux,',');//df
-            double bw = stod(aux);
-            getline(myfile, aux,',');//Df
-            Flow_info[i][0]=src;
-            Flow_info[i][1]=dst;
-            Bandwidth[i] = bw;
-        }
-    }
-    myfile.close();
 
-}
 void TrafficController::getTrafficInfo(int id, int flow_id, double rData[]) {
      for(int i = 0; i < numNodes; i++){
          rData[i]=0.01;

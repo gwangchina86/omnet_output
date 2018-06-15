@@ -25,7 +25,7 @@ using namespace std;
 #include <sstream>
 #include <cstring>
 #include <string>
-
+#include "Statistic.h"
 /**
  * TODO - Generated class
  */
@@ -42,13 +42,11 @@ class TrafficController : public cSimpleModule
         vector<double> Bandwidth;
 
 
-
-
     protected:
         virtual void initialize();
         virtual void handleMessage(cMessage *msg);
         void getTrafficInfo(int id, int flow_id, double rData[]);
-        void getTrafficFromFile(vector< vector <int> > &Flow_info, vector<double> &Bandwidth);
+
 };
 
 #endif

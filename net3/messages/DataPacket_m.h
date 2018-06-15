@@ -26,6 +26,8 @@
  *     int srcNode;
  *     int dstNode;
  *     int flow_id;
+ *     double bandwidth;
+ *     double send_delay;
  * 
  *     int ttl;
  *     int lastRouter;
@@ -55,6 +57,8 @@ class DataPacket : public ::cPacket
     int srcNode_var;
     int dstNode_var;
     int flow_id_var;
+    double bandwidth_var;
+    double send_delay_var;
     int ttl_var;
     int lastRouter_var;
     int l2_var;
@@ -95,6 +99,10 @@ class DataPacket : public ::cPacket
     virtual void setDstNode(int dstNode);
     virtual int getFlow_id() const;
     virtual void setFlow_id(int flow_id);
+    virtual double getBandwidth() const;
+    virtual void setBandwidth(double bandwidth);
+    virtual double getSend_delay() const;
+    virtual void setSend_delay(double send_delay);
     virtual int getTtl() const;
     virtual void setTtl(int ttl);
     virtual int getLastRouter() const;
